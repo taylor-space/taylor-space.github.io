@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LI CHENGLIN | AI Visual Architect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        :root {
+            --bg-dark: #050507;
+            --accent-white: #FFFFFF;
+            --text-gray: #86868B;
+            --glass: rgba(255, 255, 255, 0.04);
+            --border: rgba(255, 255, 255, 0.1);
+            --primary-glow: rgba(60, 60, 80, 0.3);
+            --text-sub: #b8bec8;
+            --text-tag: #9aa3b0;
+        }
+
+       * { 
+    margin: 0; padding: 0; box-sizing: border-box; 
+    -webkit-user-select: none; /* 禁止苹果浏览器选中 */
+    -moz-user-select: none;    /* 禁止火狐浏览器选中 */
+    -ms-user-select: none;     /* 禁止IE浏览器选中 */
+    user-select: none;         /* 禁止标准浏览器选中 */
+}
+        body {
+            background-color: var(--bg-dark);
+            color: var(--accent-white);
+            font-family: "SF Pro Display", "PingFang SC", -apple-system, sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .bg-glow {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, var(--primary-glow) 0%, transparent 70%);
+            opacity: 0.4; z-index: -1; pointer-events: none;
+            animation: moveGlow 12s infinite alternate ease-in-out;
+        }
+        @keyframes moveGlow { 0% { transform: translate(-5%, -5%) scale(1); } 100% { transform: translate(5%, 5%) scale(1.15); } }
+
+        /* --- Hero --- */
+        .hero-section { position: relative; width: 100vw; height: 100vh; overflow: hidden; background: #000; }
+        .hero-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; filter: brightness(0.72); }
+        .mask-overlay { position: absolute; top: -2px; left: -2px; width: calc(100% + 4px); height: calc(100% + 4px); z-index: 2; }
+       .mask-text { 
+    font-size: 235px; /* ⬅️ 字号降到 235px，让高度再窄一点点 */
+    font-weight: 900; 
+    font-family: Impact, sans-serif; 
+    text-transform: uppercase; 
+    transform-origin: center center; 
+    paint-order: stroke fill; 
+}
+        .hero-section::after {
+            content: "";
+            position: absolute; top: -2px; left: -2px; width: calc(100% + 4px); height: calc(100% + 4px); z-index: 3;
+            background: radial-gradient(ellipse 80% 60% at 50% 50%, transparent 40%, rgba(0,0,0,0.45) 100%);
+            pointer-events: none;
+        }
+        .scroll-guide { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 10; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .mouse { width: 22px; height: 35px; border: 2px solid #fff; border-radius: 12px; position: relative; }
+        .wheel { width: 2px; height: 7px; background: #fff; position: absolute; left: 50%; top: 7px; transform: translateX(-50%); animation: scrollAnim 1.5s infinite; }
+        @keyframes scrollAnim { 0% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; transform: translate(-50%, 15px); } }
+        .explore-text { font-size: 0.9rem; letter-spacing: 5px; color: #fff; text-transform: uppercase; font-weight: 300; }
+
+        /* ✅ 修复：bridge 与 hero 之间无缝衔接 — 背景改为 var(--bg-dark) 与 body 一致，消除黑色缝隙 */
+        .bridge-section {
+            height: 40vh;
+            min-height: 260px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 0 10%;
+            background: var(--bg-dark);
+            /* 顶部渐变过渡，遮住 pinned hero 滑走后的空隙 */
+            position: relative;
+            z-index: 4;
+            margin-top: -2px; 
+        }
+        .bridge-content { opacity: 0; transform: translateY(20px); text-align: center; }
+        .bridge-content h2 { font-size: 2.5rem; font-weight: 200; line-height: 1.6; color: #eee; }
+        .bridge-subtitle { color: var(--text-tag) !important; letter-spacing: 8px; margin-top: 25px; font-size: 1rem; }
+
+        /* --- Profile --- */
+        .profile-section { padding: 100px 5%; max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 70px; }
+        .profile-photo { width: 240px; height: 320px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); box-shadow: 0 40px 80px rgba(0,0,0,0.6); }
+        .status-badge { display: inline-block; padding: 6px 16px; background: #22c55e; color: #fff; border-radius: 4px; font-size: 0.85rem; font-weight: bold; margin-bottom: 25px; }
+        .profile-info h1 { font-size: 4rem; margin-bottom: 15px; font-weight: 800; letter-spacing: 2px; }
+        .profile-tags { display: flex; gap: 25px; margin-bottom: 30px; flex-wrap: wrap; }
+        .p-tag { color: var(--text-tag); font-size: 1.1rem; border-left: 2px solid #555; padding-left: 12px; }
+        .profile-bio { color: #c8cdd6 !important; max-width: 700px; font-size: 1.25rem; line-height: 1.9; }
+
+        /* --- Arsenal --- */
+        .arsenal-header { text-align: center; margin: 80px 0 60px; font-size: 3rem; letter-spacing: 8px; font-weight: 900; }
+        .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; padding: 0 5% 120px; max-width: 1200px; margin: 0 auto; }
+        .skill-card { background: var(--glass); padding: 45px; border-radius: 24px; border: 1px solid var(--border); backdrop-filter: blur(20px); transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1); position: relative; overflow: hidden; }
+        .skill-card:hover { transform: translateY(-15px); border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        .skill-card i { font-size: 2.5rem; margin-bottom: 25px; display: block; background: linear-gradient(135deg, #fff, #666); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .skill-card h3 { color: #fff; margin-bottom: 20px; font-size: 1.6rem; letter-spacing: 1px; }
+        .skill-card p { color: var(--text-sub); font-size: 1.1rem; line-height: 1.8; margin-bottom: 20px; }
+        .icon-row { display: flex; gap: 15px; flex-wrap: wrap; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }
+        .tool-icon { font-size: 0.85rem; color: #fff; background: rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); }
+
+        /* --- Works --- */
+        .works-section { padding: 100px 5%; background: rgba(0,0,0,0.4); }
+        .case-study { display: flex; align-items: center; gap: 80px; margin-bottom: 180px; opacity: 0; }
+        .case-study:nth-child(even) { flex-direction: row-reverse; }
+        .case-media { flex: 1.4; border-radius: 12px; overflow: hidden; border: 1px solid #222; }
+        .case-media video { width: 100%; display: block; transition: 0.8s ease; }
+        .case-info { flex: 1; }
+        .case-tags { margin-bottom: 15px; display: flex; gap: 10px; }
+        .case-tag { font-size: 0.8rem; letter-spacing: 2px; color: #555; text-transform: uppercase; font-weight: bold; border-bottom: 1px solid #333; }
+        .case-title { font-size: 2.8rem; margin: 15px 0 25px; font-weight: 700; }
+        .case-desc { color: var(--text-sub); line-height: 2; font-size: 1.1rem; }
+
+        /* --- Journey --- */
+        .journey-section { padding: 120px 5% 60px; max-width: 1000px; margin: 0 auto; }
+        .exp-item { position: relative; padding-left: 50px; border-left: 2px solid #222; margin-bottom: 80px; opacity: 0; transform: translateX(-30px); }
+        .exp-item::before { content: ""; position: absolute; left: -8px; top: 6px; width: 14px; height: 14px; background: #333; border-radius: 50%; box-shadow: none; transition: background 0.4s, box-shadow 0.4s; }
+        .exp-item.active::before { background: #fff; box-shadow: 0 0 15px #fff, 0 0 30px rgba(255,255,255,0.3); }
+        .journey-wrapper { position: relative; }
+        .exp-date { font-size: 1.1rem; color: var(--text-tag); margin-bottom: 12px; font-family: monospace; }
+        .exp-company { font-size: 2rem; font-weight: bold; margin-bottom: 15px; color: #fff; }
+        .exp-desc { color: var(--text-sub); line-height: 1.9; font-size: 1.1rem; white-space: pre-line; }
+
+        /* =============================================
+           FOOTER
+        ============================================= */
+        .footer-reveal {
+            position: relative;
+            padding: 80px 5% 80px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .footer-aura {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px; height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(80,80,120,0.18) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+            animation: auraBreath 4s ease-in-out infinite;
+            animation-play-state: paused;
+        }
+        @keyframes auraBreath {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+            50% { transform: translate(-50%, -50%) scale(1.25); opacity: 1; }
+        }
+
+        .footer-divider {
+            position: relative; z-index: 2;
+            width: 0; height: 1px;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.35), transparent);
+            margin: 0 auto 80px;
+        }
+
+        .footer-title-wrap {
+            position: relative; z-index: 2;
+            margin-bottom: 60px;
+            overflow: hidden;
+        }
+
+        /* ✅ 修复：LET'S CREATE 初始状态从下方 60px 起，透明，无黑屏闪烁 */
+        .footer-title {
+            font-size: 6rem;
+            font-weight: 900;
+            letter-spacing: 8px;
+            background: linear-gradient(135deg, #ffffff 0%, #666 60%, #ffffff 100%);
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            opacity: 1;
+            transform: translateY(0);
+            display: inline-block;
+            animation: shimmerSweep 3.5s ease-in-out infinite;
+            animation-play-state: paused;
+        }
+        @keyframes shimmerSweep {
+            0% { background-position: 100% 0; }
+            50% { background-position: -100% 0; }
+            100% { background-position: 100% 0; }
+        }
+
+        .contact-box { position: relative; z-index: 2; }
+        .contact-link {
+    display: block; font-size: 1.6rem; color: var(--text-sub);
+    text-decoration: none; margin: 20px 0; font-weight: 200;
+    transition: color 0.3s, letter-spacing 0.3s;
+    opacity: 0; transform: translateY(18px);
+    -webkit-user-select: text !important; /* 允许选中文字 */
+    user-select: text !important;         /* 允许选中文字 */
+}
+        .contact-link:hover { color: #fff; letter-spacing: 2px; }
+        .footer-location { margin-top: 50px; font-size: 1rem; color: var(--text-tag); position: relative; z-index: 2; opacity: 0; transform: translateY(18px); }
+        .footer-copy { margin-top: 100px; font-size: 0.8rem; color: #2a2a35; letter-spacing: 4px; position: relative; z-index: 2; opacity: 0; }
+
+        .footer-scanline {
+            position: absolute;
+            left: 0; top: 0;
+            width: 100%; height: 1px;
+            background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%);
+            z-index: 3;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* --- Video Controls --- */
+        .play-btn {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 64px; height: 64px;
+            background: rgba(255,255,255,0.15);
+            border: 2px solid rgba(255,255,255,0.6);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; color: #fff;
+            cursor: pointer; backdrop-filter: blur(6px);
+            transition: background 0.3s, transform 0.3s;
+            pointer-events: all;
+        }
+        .play-btn:hover { background: rgba(255,255,255,0.3); transform: translate(-50%, -50%) scale(1.1); }
+        .video-progress-wrap {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            padding: 20px 0 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%);
+            opacity: 0; transition: opacity 0.3s ease;
+            pointer-events: none; z-index: 5;
+        }
+        .case-media:hover .video-progress-wrap { opacity: 1; pointer-events: all; }
+        .video-progress {
+            width: calc(100% - 32px); margin: 0 16px 12px;
+            height: 3px; -webkit-appearance: none; appearance: none;
+            background: rgba(255,255,255,0.25); border-radius: 2px;
+            cursor: pointer; display: block; outline: none; transition: height 0.2s;
+        }
+        .video-progress:hover { height: 5px; }
+        .video-progress::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 12px; height: 12px;
+            border-radius: 50%; background: #fff; cursor: pointer; margin-top: -4px;
+        }
+        .video-progress::-webkit-slider-runnable-track {
+            height: 3px; border-radius: 2px;
+            background: linear-gradient(to right, #fff var(--progress, 0%), rgba(255,255,255,0.25) var(--progress, 0%));
+        }
+        .video-progress::-moz-range-thumb { width: 12px; height: 12px; border-radius: 50%; background: #fff; cursor: pointer; border: none; }
+        .video-progress::-moz-range-track { height: 3px; border-radius: 2px; background: rgba(255,255,255,0.25); }
+        .video-controls-row {
+            display: flex; align-items: center; gap: 10px;
+            width: calc(100% - 32px); margin: 0 16px 12px;
+        }
+        .video-play-icon {
+            width: 28px; height: 28px; flex-shrink: 0;
+            background: none; border: 1.5px solid rgba(255,255,255,0.7);
+            border-radius: 50%; color: #fff; font-size: 0.7rem;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: background 0.2s, transform 0.2s; padding-left: 2px;
+        }
+        .video-play-icon.is-playing { padding-left: 0; }
+        .video-play-icon:hover { background: rgba(255,255,255,0.2); transform: scale(1.1); }
+        .video-progress { flex: 1; margin: 0; width: auto; }
+
+        @media (max-width: 1024px) {
+            .profile-section { flex-direction: column; text-align: center; }
+            .case-study, .case-study:nth-child(even) { flex-direction: column; text-align: center; gap: 40px; }
+            .footer-title { font-size: 3.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow"></div>
+
+    <section class="hero-section">
+        <video class="hero-video" autoplay loop muted playsinline>
+            <source src="https://taylor-resume2026-1428999879.cos.ap-beijing.myqcloud.com/hero.webm" type="video/mp4">
+        </video>
+        <svg class="mask-overlay" viewBox="0 0 1000 280" preserveAspectRatio="xMidYMid slice">
+    <defs>
+        <mask id="m">
+            <rect width="100%" height="100%" fill="white"/>
+            <text 
+    x="50%" 
+    y="55%" 
+    text-anchor="middle" 
+    dominant-baseline="middle" 
+    textLength="960" /* ⬅️ 关键：宽度缩回到 960，让所有字母完整显示 */
+    lengthAdjust="spacingAndGlyphs" 
+    class="mask-text"
+>
+   .I~. LICHENGLINI..IN
+</text>
+        </mask>
+    </defs>
+    <rect width="100%" height="100%" fill="rgba(0,0,0,0.82)" mask="url(#m)"/>
+</svg>
+        <div class="scroll-guide">
+            <div class="mouse"><div class="wheel"></div></div>
+            <div class="explore-text">Scroll to Explore</div>
+        </div>
+    </section>
+
+    <section class="bridge-section">
+        <div class="bridge-content">
+            <h2> 指令驭象，音感铸魂，<br>一人即全链路。</h2>
+            <p class="bridge-subtitle">VISUAL ENGINEER / AIGC SPECIALIST</p>
+        </div>
+    </section>
+
+    <section class="profile-section">
+        <img src="https://taylor-resume2026-1428999879.cos.ap-beijing.myqcloud.com/Photo.webp" class="profile-photo">
+        <div class="profile-info">
+            <div class="status-badge">● 全国履职 · 随时到岗 AVAILABLE NOW</div>
+            <h1>李承霖 / Taylor</h1>
+            <div class="profile-tags">
+                <span class="p-tag">2000.12</span>
+                <span class="p-tag">长春师范大学</span>
+                <span class="p-tag">英语专业（本科）</span>
+                <span class="p-tag">中共党员</span>
+            </div>
+            <p class="profile-bio">
+                <b>全链路 AI 视觉创作者 & 视频策划师。</b><br>
+                深耕短视频内容生态，独立完成多类型视频项目全流程制作。凭借英语专业底蕴调教 AIGC 链路，在快节奏交付中保持极致的审美直觉。
+            </p>
+        </div>
+    </section>
+
+    <h2 class="arsenal-header">CORE ARSENAL</h2>
+    <div class="skills-grid">
+        <div class="skill-card">
+            <i class="fa-solid fa-microchip"></i>
+            <h3>AIGC 全栈链路</h3>
+            <p>熟练驾驭 Gemini、Claude、DeepSeek 组成的顶层文本算力矩阵。深度掌握双语 Prompt 调优，并将其无缝接入可灵 AI、即梦 AI、Flow 及豆包等多模态视频生成生态。精通 Nano Banana Pro 等高阶视觉模型，实现从“抽象指令”到“院线级像素”的瞬时维度跨越。</p>
+            <div class="icon-row">
+                <span class="tool-icon">Gemini</span><span class="tool-icon">Claude</span><span class="tool-icon">DeepSeek</span><span class="tool-icon">可灵AI</span><span class="tool-icon">即梦AI</span><span class="tool-icon">Flow</span><span class="tool-icon">豆包</span><span class="tool-icon">Nano Banana Pro</span>
+            </div>
+        </div>
+        <div class="skill-card">
+            <i class="fa-solid fa-language"></i>
+            <h3>双语内容策划</h3>
+            <p>英语专业背景，具备跨语言直觉。能用原生英文精准操控全球顶尖模型，实现最精细的指令下达。擅长品牌翻译、双语新闻稿及内容本地化策划。</p>
+            <div class="icon-row">
+                <span class="tool-icon">CET-6</span><span class="tool-icon">国家奖学金</span><span class="tool-icon">省政府奖学金</span><span class="tool-icon">翻译大赛一等奖</span><span class="tool-icon">高中英语教师资格证</span><span class="tool-icon">普通话二级甲等证书</span><span class="tool-icon">Copywriting</span>
+            </div>
+        </div>
+        <div class="skill-card">
+            <i class="fa-solid fa-music"></i>
+            <h3>绝对音感卡点</h3>
+            <p>前乐队主唱，曾入围中国好声音吉林省总决赛前五。赋予视频独特的律动感，对 BGM 情绪铺垫与声画同步拥有敏锐把控力。精通后期音频处理，确立极具节奏感的视觉语言。</p>
+            <div class="icon-row">
+                <span class="tool-icon">Vocalist</span><span class="tool-icon">Audio Edit</span><span class="tool-icon">Rhythm Sense</span><span class="tool-icon">中国好声音吉林TOP5</span>
+            </div>
+        </div>
+<div class="skill-card">
+    <i class="fa-solid fa-bolt"></i>
+    <h3>敏捷视觉交付</h3>
+    <p> 摒弃传统重工业流，精通 CapCut (剪映专业版)与移动端高效剪辑生态。擅长将 AIGC 原始物料经由醒图极速精修后，深度结合敏捷剪辑流。并利用 Office 高效统筹物料数据，确保高压环境下素材矩阵的极速裂变与高标准交付。</p>
+    <div class="icon-row">
+        <span class="tool-icon">CapCut 剪映专业版</span>
+        <span class="tool-icon">醒图极速精修</span>
+        <span class="tool-icon">Office 数据统筹</span>
+        <span class="tool-icon">素材矩阵管理</span>
+    </div>
+</div>    
+</div>
+
+    <section class="works-section">
+        <h2 style="text-align:center; font-size:3.5rem; margin-bottom:120px; letter-spacing:5px;">SELECTED WORKS</h2>
+        <div class="case-study">
+            <div class="case-media" style="position:relative;">
+                <video playsinline style="width:100%;display:block;cursor:pointer;" onclick="toggleVideo(this)"><source src="https://taylor-resume2026-1428999879.cos.ap-beijing.myqcloud.com/work1.webm" type="video/mp4"></video>
+                <div class="play-btn" onclick="toggleVideo(this.previousElementSibling)">&#9654;</div>
+                <div class="video-progress-wrap">
+                    <div class="video-controls-row">
+                        <button class="video-play-icon" onclick="toggleByBtn(this)">&#9654;</button>
+                        <input class="video-progress" type="range" value="0" min="0" max="100" step="0.1" oninput="seekVideo(this)">
+                    </div>
+                </div>
+            </div>
+            <div class="case-info">
+                <div class="case-tags"><span class="case-tag">AI Concept</span><span class="case-tag">AIGC</span></div>
+                <h3 class="case-title">01 / AI 重塑视界报告</h3>
+                <p class="case-desc">利用Gemini、Claude、DeepSeek等指令构建与可灵高精视频生成，实现从脚本到视觉的瞬时转化。探索 AI 在 4K 商业片中的落地边界。</p>
+            </div>
+        </div>
+        <div class="case-study">
+            <div class="case-media" style="position:relative;">
+                <video playsinline style="width:100%;display:block;cursor:pointer;" onclick="toggleVideo(this)"><source src="https://taylor-resume2026-1428999879.cos.ap-beijing.myqcloud.com/work2.webm" type="video/mp4"></video>
+                <div class="play-btn" onclick="toggleVideo(this.previousElementSibling)">&#9654;</div>
+                <div class="video-progress-wrap">
+                    <div class="video-controls-row">
+                        <button class="video-play-icon" onclick="toggleByBtn(this)">&#9654;</button>
+                        <input class="video-progress" type="range" value="0" min="0" max="100" step="0.1" oninput="seekVideo(this)">
+                    </div>
+                </div>
+            </div>
+            <div class="case-info">
+                <div class="case-tags"><span class="case-tag">Commercial</span><span class="case-tag">Emotional</span></div>
+                <h3 class="case-title">02 / 品牌情绪影像</h3>
+                <p class="case-desc">深度把控剪辑节奏与影调逻辑。为企业级传播提供最具温度的视觉叙事，已在多个商业场景中验证其传播溢价能力。</p>
+            </div>
+        </div>
+        <div class="case-study">
+            <div class="case-media" style="position:relative;">
+                <video playsinline style="width:100%;display:block;cursor:pointer;" onclick="toggleVideo(this)"><source src="https://taylor-resume2026-1428999879.cos.ap-beijing.myqcloud.com/work3.webm" type="video/mp4"></video>
+                <div class="play-btn" onclick="toggleVideo(this.previousElementSibling)">&#9654;</div>
+                <div class="video-progress-wrap">
+                    <div class="video-controls-row">
+                        <button class="video-play-icon" onclick="toggleByBtn(this)">&#9654;</button>
+                        <input class="video-progress" type="range" value="0" min="0" max="100" step="0.1" oninput="seekVideo(this)">
+                    </div>
+                </div>
+            </div>
+            <div class="case-info">
+                <div class="case-tags"><span class="case-tag">Performance</span><span class="case-tag">Overseas UA</span></div>
+                <h3 class="case-title">03 / 商业叙事影像</h3>
+                <p class="case-desc">探索 AIGC 在全球买量生态中的变现边界。以「写实克制」到「奇观爆发」的视觉跃迁构筑感官锚点，将产品交互逻辑与高转化（CTR）的买量基因，完美重构于院线级的动态叙事之中。</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="journey-section">
+        <h2 style="margin-bottom:80px; font-size:3rem; letter-spacing:3px;">THE JOURNEY</h2>
+        <div class="journey-wrapper">
+            <div class="exp-item" data-journey>
+                <div class="exp-date">2024.08 - 至今</div>
+                <div class="exp-company">自由视觉创作者 · AI 内容策划</div>
+                <div class="exp-desc">• 主导从脚本策划到 AI 生成、后期剪辑交付的完整全链路。
+• 全流程独立策划与制作，从脚本到成片一人闭环，精准把控网感与流量逻辑。运用 AI 敏捷流显著提升产出精度。</div>
+            </div>
+            <div class="exp-item" data-journey>
+                <div class="exp-date">2023.07 - 2024.07</div>
+                <div class="exp-company">教育统筹 · 跨界沟通协调实习</div>
+                <div class="exp-desc">• 在教培一线锻炼了极强的压力管理、多任务处理及统筹执行力。
+• 具备极快的跨行业知识拆解速度，负责多层级活动的高效执行。</div>
+            </div>
+            <div class="exp-item" data-journey>
+                <div class="exp-date">2019.09 - 2024.06</div>
+                <div class="exp-company">长春师范大学 · 英语专业 (优秀毕业生)</div>
+                <div class="exp-desc">• 绩点前 2%，获国家奖学金/省政府奖学金。多次获国家级、省级翻译/写作大赛一等奖。
+• 曾任志愿者部副部长、班级学习委员、生活委员、心理委员、班主任助理。为 AI 创作提供坚实的创意底蕴与国际视野。
+• 选修英语电影分析课期间，独立担任导演、编剧、摄影与剪辑，完成多部短片作业——这是最早的全链路视觉自驱力的起点。</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ✅ 无 END OF STORY 过渡区，直接 footer -->
+    <footer class="footer-reveal" id="footer-reveal">
+        <div class="footer-aura" id="footer-aura"></div>
+        <div class="footer-scanline" id="footer-scanline"></div>
+        <div class="footer-divider" id="footer-divider"></div>
+
+        <div class="footer-title-wrap">
+            <h2 class="footer-title" id="footer-title">LET'S CREATE.</h2>
+        </div>
+
+        <div class="contact-box">
+            <a href="tel:16688211258" class="contact-link" data-contact>Mobile：+86 16688211258</a>
+            <a href="mailto:2219155668@qq.com" class="contact-link" data-contact>Email：2219155668@qq.com</a>
+            <p class="footer-location" data-contact>📍 全国履职 · 随时到岗</p>
+        </div>
+        <p class="footer-copy" id="footer-copy">© 2026 LI CHENGLIN. ALL RIGHTS RESERVED.</p>
+    </footer>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // ── Hero 穿透（缩短 pin 距离让 bridge 更快出现）
+        gsap.timeline({
+            scrollTrigger: { trigger: ".hero-section", start: "top top", end: "+=60%", pin: true, scrub: 1 }
+        })
+        .to(".mask-text", { scale: 80, opacity: 0, ease: "power2.inOut" })
+        .to(".scroll-guide", { opacity: 0, y: 30 }, 0);
+
+        // ── Bridge 文字（提前触发，更快出现）
+        gsap.to(".bridge-content", {
+            opacity: 1, y: 0,
+            scrollTrigger: { trigger: ".bridge-section", start: "top 95%", end: "top 55%", scrub: true }
+        });
+
+        // ── Works 滑入
+        gsap.utils.toArray(".case-study").forEach((el, i) => {
+            gsap.fromTo(el,
+                { opacity: 0, x: i % 2 === 0 ? -50 : 50 },
+                { opacity: 1, x: 0, duration: 1.5, scrollTrigger: { trigger: el, start: "top 85%" } }
+            );
+        });
+
+        // ── Journey 时间线入场
+        document.querySelectorAll("[data-journey]").forEach((item, i) => {
+            gsap.to(item, {
+                opacity: 1, x: 0, duration: 0.9, ease: "power3.out",
+                delay: 0.1 * i,
+                scrollTrigger: {
+                    trigger: item, start: "top 88%",
+                    onEnter: () => item.classList.add("active")
+                }
+            });
+        });
+
+        // ── Journey 时间线颜色进度
+        ScrollTrigger.create({
+            trigger: ".journey-wrapper",
+            start: "top 80%", end: "bottom 60%", scrub: 0.8,
+            onUpdate: (self) => {
+                document.querySelectorAll("[data-journey]").forEach((item, i) => {
+                    const p = Math.max(0, Math.min(1, (self.progress * 3) - i));
+                    const v = Math.round(34 + 187 * p);
+                    item.style.borderLeftColor = `rgb(${v},${v},${v})`;
+                });
+            }
+        });
+
+        // ── Video 控制
+        function syncBtn(video) {
+            const btn = video.parentElement.querySelector(".video-play-icon");
+            const bigBtn = video.nextElementSibling;
+            if (!video.paused) {
+                if (btn) { btn.innerHTML = "&#10074;&#10074;"; btn.classList.add("is-playing"); }
+                if (bigBtn && bigBtn.classList.contains("play-btn")) bigBtn.style.opacity = "0";
+            } else {
+                if (btn) { btn.innerHTML = "&#9654;"; btn.classList.remove("is-playing"); }
+                if (bigBtn && bigBtn.classList.contains("play-btn")) bigBtn.style.opacity = "1";
+            }
+        }
+        function toggleVideo(video) { video.paused ? video.play() : video.pause(); syncBtn(video); }
+        function toggleByBtn(btn) {
+            const video = btn.closest(".case-media").querySelector("video");
+            video.paused ? video.play() : video.pause(); syncBtn(video);
+        }
+        function seekVideo(range) {
+            const video = range.closest(".case-media").querySelector("video");
+            if (video.duration) video.currentTime = (range.value / 100) * video.duration;
+        }
+        document.querySelectorAll(".case-media").forEach(media => {
+            const video = media.querySelector("video");
+            const range = media.querySelector(".video-progress");
+            if (!video || !range) return;
+            video.addEventListener("timeupdate", () => {
+                if (!video.duration) return;
+                const pct = (video.currentTime / video.duration) * 100;
+                range.value = pct;
+                range.style.setProperty("--progress", pct + "%");
+            });
+            video.addEventListener("pause", () => syncBtn(video));
+            video.addEventListener("play", () => syncBtn(video));
+            
+            // 下面这三行是新增的，用于播放结束后自动复位
+            video.addEventListener("ended", () => {
+                video.currentTime = 0; 
+                syncBtn(video);        
+            });
+        });
+
+        // ── Footer 动画
+        let footerDone = false;
+
+        function runFooterAnimation() {
+            if (footerDone) return;
+            footerDone = true;
+
+            const aura     = document.getElementById("footer-aura");
+            const scanline = document.getElementById("footer-scanline");
+            const divider  = document.getElementById("footer-divider");
+            const title    = document.getElementById("footer-title");
+            const contacts = document.querySelectorAll("[data-contact]");
+            const copy     = document.getElementById("footer-copy");
+
+            const tl = gsap.timeline();
+
+            // 扫描线
+            tl.set(scanline, { opacity: 1, top: "0%" })
+              .to(scanline, { top: "100%", duration: 0.7, ease: "none" })
+              .set(scanline, { opacity: 0 });
+
+            // 分割线展开
+            tl.to(divider, { width: "55%", duration: 0.5, ease: "power3.out" }, "-=0.3");
+
+            // 光晕
+            tl.to(aura, {
+                opacity: 1, duration: 0.4,
+                onComplete: () => { aura.style.animationPlayState = "running"; }
+            }, "-=0.2");
+
+            // ✅ LET'S CREATE 从下往上滑入（和 Journey 入场同风格，translateY 60→0）
+            tl.set(title, { opacity: 1, y: 0 })
+                .to(title, {
+                 duration: 0.01,
+                 onComplete: () => { title.style.animationPlayState = "running"; }
+            }, "-=0.1");
+
+            // 联系方式逐行浮现
+            tl.to(contacts, {
+                opacity: 1, y: 0,
+                duration: 0.6, ease: "power3.out", stagger: 0.15
+            }, "-=0.5");
+
+            // 版权行
+            tl.to(copy, { opacity: 1, duration: 0.5, ease: "power2.out" }, "-=0.1");
+        }
+
+        // ✅ Journey 区域进入时立即触发 footer 动画，无黑屏等待
+        ScrollTrigger.create({
+            trigger: ".journey-section",
+            start: "bottom 70%",
+            onEnter: runFooterAnimation
+        });
+
+        // 防右键
+        document.querySelectorAll("video").forEach(v => {
+            v.addEventListener("contextmenu", e => e.preventDefault());
+        });
+
+        // 防键盘快捷键保存
+        document.addEventListener("keydown", e => {
+            if ((e.ctrlKey || e.metaKey) && (e.key === "s" || e.key === "u")) e.preventDefault();
+        });
+
+        // 混淆视频请求
+        document.querySelectorAll(".case-media video").forEach(video => {
+            const src = video.querySelector("source").getAttribute("src");
+            video.querySelector("source").removeAttribute("src");
+            setTimeout(() => {
+                video.querySelector("source").src = src;
+                video.load();
+                setTimeout(() => {
+                    ScrollTrigger.refresh();
+                    ScrollTrigger.update();
+                }, 300);
+            }, 2000);
+        });
+// --- 物理防护：禁止右键和复制 ---
+document.addEventListener('contextmenu', e => {
+    // 检查点：如果你点击的是联系方式链接，就允许右键
+    if (!e.target.closest('.contact-link')) {
+        e.preventDefault();
+    }
+});
+
+document.addEventListener('keydown', e => {
+    // 拦截 Ctrl+C / Cmd+C (复制快捷键)
+    if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
+        // 如果不是在联系方式上复制，就拦截
+        if (!e.target.closest('.contact-link')) {
+            e.preventDefault();
+            return false;
+        }
+    }
+    // 拦截 F12 调试模式
+    if (e.key === 'F12') e.preventDefault();
+});
+    </script>
+</body>
+</html>
