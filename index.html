@@ -95,6 +95,19 @@
         .icon-row { display: flex; gap: 15px; flex-wrap: wrap; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }
         .tool-icon { font-size: 0.85rem; color: #fff; background: rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); }
 
+        /* --- HD Button Hover Effect --- */
+        .hd-btn {
+            display: inline-flex; align-items: center; gap: 12px; color: #fff; text-decoration: none;
+            padding: 15px 32px; border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; 
+            background: rgba(255,255,255,0.04); font-size: 1.1rem; letter-spacing: 2px;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .hd-btn:hover {
+            transform: translateY(-5px) scale(1.02);
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.3);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5), 0 0 20px rgba(255,255,255,0.05);
+        }
         /* --- Works --- */
         .works-section { padding: 100px 5%; background: rgba(0,0,0,0.4); }
         .case-study { display: flex; align-items: center; gap: 80px; margin-bottom: 180px; opacity: 0; }
@@ -331,6 +344,13 @@
                 <h3 class="case-title">03 / 商业叙事影像</h3>
                 <p class="case-desc">探索 AIGC 在全球买量生态中的变现边界。以「写实克制」到「奇观爆发」的视觉跃迁构筑感官锚点，将产品交互逻辑与高转化（CTR）的买量基因，完美重构于院线级的动态叙事之中。</p>
             </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 60px; opacity: 0; transform: translateY(20px);" data-journey>
+            <a href="https://pan.baidu.com/s/1-wS_pXgC4iHRGFed2Rj70A?pwd=LIN6" target="_blank" class="hd-btn">
+                <i class="fas fa-film"></i> 视觉概念集 (高码率版本)
+            </a>
+            <p style="color: #888; font-size: 0.85rem; margin-top: 16px; letter-spacing: 1px;">提取码：LIN6 | 供沉浸式审阅：还原无损帧率与纯粹的光影细节</p>
         </div>
     </section>
 
