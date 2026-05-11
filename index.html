@@ -176,7 +176,7 @@
     <div class="bg-glow"></div>
 
     <section class="hero-section">
-        <video class="hero-video" autoplay loop muted playsinline poster="https://taylor-resume2026-1428999879.cos.ap-beijing.myqcloud.com/hero.webp">
+        <video class="hero-video" autoplay loop muted playsinline webkit-playsinline x5-video-player-type="h5" poster="https://taylor-resume2026-1428999879.cos.ap-beijing.myqcloud.com/hero.webp">
             <source src="https://taylor-resume2026-1428999879.cos.ap-beijing.myqcloud.com/hero.webm" type="video/webm">
             <source src="https://taylor-resume2026-1428999879.cos.ap-beijing.myqcloud.com/hero.mp4" type="video/mp4">
         </video>
@@ -543,26 +543,21 @@
         document.addEventListener("keydown", e => {
             if ((e.ctrlKey || e.metaKey) && (e.key === "s" || e.key === "u")) e.preventDefault();
         });
-
-        document.querySelectorAll(".case-media video").forEach(video => {
-            const src = video.querySelector("source").getAttribute("src");
-            video.querySelector("source").removeAttribute("src");
-            setTimeout(() => {
-                video.querySelector("source").src = src;
-                video.load();
-                setTimeout(() => {
-                    ScrollTrigger.refresh();
-                    ScrollTrigger.update();
-                }, 300);
-            }, 2000);
-        });
-
+        
         document.addEventListener('contextmenu', e => {
             if (!e.target.closest('.contact-link')) {
                 e.preventDefault();
             }
         });
 
+// 🚨 苹果 iOS 强制唤醒终极补丁
+        document.body.addEventListener('touchstart', function() {
+            const heroVid = document.querySelector('.hero-video');
+            if (heroVid && heroVid.paused) {
+                // 只要手指摸到屏幕，强制开播！
+                heroVid.play().catch(e => console.log("等待交互完成"));
+            }
+        }, { once: true }); // once:true 保证只触发一次，绝不卡顿
         document.addEventListener('keydown', e => {
             if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
                 if (!e.target.closest('.contact-link')) {
@@ -572,6 +567,13 @@
             }
             if (e.key === 'F12') e.preventDefault();
         });
+// 专门对付苹果 iOS 的“强制唤醒”补丁
+        document.addEventListener('touchstart', function () {
+            const heroVideo = document.querySelector('.hero-video');
+            if (heroVideo && heroVideo.paused) {
+                heroVideo.play();
+            }
+        }, { once: true }); // once: true 表示只要摸一次屏幕就触发，不浪费性能
     </script>
 </body>
 </html>
