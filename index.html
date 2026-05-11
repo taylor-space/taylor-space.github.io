@@ -176,8 +176,9 @@
     <div class="bg-glow"></div>
 
     <section class="hero-section">
-        <video class="hero-video" autoplay loop muted playsinline>
+        <video class="hero-video" autoplay loop muted playsinline poster="https://taylor-resume2026-1428999879.cos.ap-beijing.myqcloud.com/hero.webp">
             <source src="https://taylor-resume2026-1428999879.cos.ap-beijing.myqcloud.com/hero.webm" type="video/webm">
+            <source src="https://taylor-resume2026-1428999879.cos.ap-beijing.myqcloud.com/hero.mp4" type="video/mp4">
         </video>
         <svg class="mask-overlay" viewBox="0 0 1000 260" preserveAspectRatio="xMidYMid meet">
             <defs>
@@ -264,12 +265,18 @@
         <h2 style="text-align:center; font-size:3.5rem; margin-bottom:120px; letter-spacing:5px;">SELECTED WORKS</h2>
         <div class="case-study">
             <div class="case-media" style="position:relative;">
-                <video playsinline style="width:100%;display:block;cursor:pointer;" onclick="toggleVideo(this)"><source src="https://taylor-resume2026-1428999879.cos.ap-beijing.myqcloud.com/work1.webm" type="video/webm"></video>
+                <video playsinline poster="https://taylor-resume2026-1428999879.cos.ap-beijing.myqcloud.com/work1.webp" style="width:100%;display:block;cursor:pointer;" onclick="toggleVideo(this)">
+                    <source src="https://taylor-resume2026-1428999879.cos.ap-beijing.myqcloud.com/work1.webm" type="video/webm">
+                </video>
                 <div class="play-btn" onclick="toggleVideo(this.previousElementSibling)">&#9654;</div>
                 <div class="video-progress-wrap">
                     <div class="video-controls-row">
                         <button class="video-play-icon" onclick="toggleByBtn(this)">&#9654;</button>
-                        <input class="video-progress" type="range" value="0" min="0" max="100" step="0.1" oninput="seekVideo(this)">
+                        <input class="video-progress" type="range" value="0" min="0" max="100" step="0.1" 
+                   onchange="seekVideo(this)" oninput="updateProgressUI(this)">
+            <button class="video-play-icon" style="border:none; font-size:1.1rem; padding:0;" onclick="toggleMute(this)">
+                <i class="fas fa-volume-up"></i>
+            </button>
                     </div>
                 </div>
             </div>
@@ -281,12 +288,18 @@
         </div>
         <div class="case-study">
             <div class="case-media" style="position:relative;">
-                <video playsinline style="width:100%;display:block;cursor:pointer;" onclick="toggleVideo(this)"><source src="https://taylor-resume2026-1428999879.cos.ap-beijing.myqcloud.com/work2.webm" type="video/webm"></video>
+                <video playsinline poster="https://taylor-resume2026-1428999879.cos.ap-beijing.myqcloud.com/work2.webp" style="width:100%;display:block;cursor:pointer;" onclick="toggleVideo(this)">
+                    <source src="https://taylor-resume2026-1428999879.cos.ap-beijing.myqcloud.com/work2.webm" type="video/webm">
+                </video>
                 <div class="play-btn" onclick="toggleVideo(this.previousElementSibling)">&#9654;</div>
                 <div class="video-progress-wrap">
                     <div class="video-controls-row">
                         <button class="video-play-icon" onclick="toggleByBtn(this)">&#9654;</button>
-                        <input class="video-progress" type="range" value="0" min="0" max="100" step="0.1" oninput="seekVideo(this)">
+                        <input class="video-progress" type="range" value="0" min="0" max="100" step="0.1" 
+                   onchange="seekVideo(this)" oninput="updateProgressUI(this)">
+            <button class="video-play-icon" style="border:none; font-size:1.1rem; padding:0;" onclick="toggleMute(this)">
+                <i class="fas fa-volume-up"></i>
+            </button>
                     </div>
                 </div>
             </div>
@@ -298,12 +311,18 @@
         </div>
         <div class="case-study">
             <div class="case-media" style="position:relative;">
-                <video playsinline style="width:100%;display:block;cursor:pointer;" onclick="toggleVideo(this)"><source src="https://taylor-resume2026-1428999879.cos.ap-beijing.myqcloud.com/work3.webm" type="video/webm"></video>
+                <video playsinline poster="https://taylor-resume2026-1428999879.cos.ap-beijing.myqcloud.com/work3.webp" style="width:100%;display:block;cursor:pointer;" onclick="toggleVideo(this)">
+                    <source src="https://taylor-resume2026-1428999879.cos.ap-beijing.myqcloud.com/work3.webm" type="video/webm">
+                </video>
                 <div class="play-btn" onclick="toggleVideo(this.previousElementSibling)">&#9654;</div>
                 <div class="video-progress-wrap">
                     <div class="video-controls-row">
                         <button class="video-play-icon" onclick="toggleByBtn(this)">&#9654;</button>
-                        <input class="video-progress" type="range" value="0" min="0" max="100" step="0.1" oninput="seekVideo(this)">
+                        <input class="video-progress" type="range" value="0" min="0" max="100" step="0.1" 
+                   onchange="seekVideo(this)" oninput="updateProgressUI(this)">
+            <button class="video-play-icon" style="border:none; font-size:1.1rem; padding:0;" onclick="toggleMute(this)">
+                <i class="fas fa-volume-up"></i>
+            </button>
                     </div>
                 </div>
             </div>
@@ -401,6 +420,12 @@
             }
         });
 
+        // 1. 初始化音量：所有作品视频初始 50% 音量，平衡听感 [cite: 185]
+        document.querySelectorAll('.case-media video').forEach(v => {
+            v.volume = 0.5;
+        });
+
+        // 2. 状态同步：统一大/小播放按钮的图标 [cite: 162-167]
         function syncBtn(video) {
             const btn = video.parentElement.querySelector(".video-play-icon");
             const bigBtn = video.nextElementSibling;
@@ -412,31 +437,56 @@
                 if (bigBtn && bigBtn.classList.contains("play-btn")) bigBtn.style.opacity = "1";
             }
         }
-        function toggleVideo(video) { video.paused ? video.play() : video.pause(); syncBtn(video); }
+
+        function toggleVideo(video) { 
+            video.paused ? video.play() : video.pause(); 
+            syncBtn(video); 
+        }
+
         function toggleByBtn(btn) {
             const video = btn.closest(".case-media").querySelector("video");
-            video.paused ? video.play() : video.pause(); syncBtn(video);
+            toggleVideo(video);
         }
+
+        // 3. 性能优化：只有松手(onchange)才执行视频跳转，大幅减少卡顿 [cite: 169-170]
         function seekVideo(range) {
             const video = range.closest(".case-media").querySelector("video");
-            if (video.duration) video.currentTime = (range.value / 100) * video.duration;
+            if (video.duration) {
+                video.currentTime = (range.value / 100) * video.duration;
+            }
         }
+
+        // 4. 拖拽时的UI即时反馈 [cite: 171]
+        function updateProgressUI(range) {
+            range.style.setProperty("--progress", range.value + "%");
+        }
+
+        // 5. 静音切换
+        function toggleMute(btn) {
+            const video = btn.closest(".case-media").querySelector("video");
+            video.muted = !video.muted;
+            btn.innerHTML = video.muted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+        }
+
+        // 6. 建立自动监听：实时同步视频进度与按钮状态 [cite: 170-172]
         document.querySelectorAll(".case-media").forEach(media => {
             const video = media.querySelector("video");
             const range = media.querySelector(".video-progress");
             if (!video || !range) return;
+
             video.addEventListener("timeupdate", () => {
                 if (!video.duration) return;
                 const pct = (video.currentTime / video.duration) * 100;
                 range.value = pct;
                 range.style.setProperty("--progress", pct + "%");
             });
+
+            // 监听各种操作确保 UI 不卡死
             video.addEventListener("pause", () => syncBtn(video));
             video.addEventListener("play", () => syncBtn(video));
-            
-            video.addEventListener("ended", () => {
+            video.addEventListener("ended", () => { 
                 video.currentTime = 0; 
-                syncBtn(video);        
+                syncBtn(video); 
             });
         });
 
