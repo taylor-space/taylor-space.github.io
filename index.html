@@ -574,6 +574,14 @@
                 heroVideo.play();
             }
         }, { once: true }); // once: true 表示只要摸一次屏幕就触发，不浪费性能
+        // 🚨 苹果 iOS 首屏视频不循环 Bug 终极修复
+        const heroVideoElement = document.querySelector('.hero-video');
+        if (heroVideoElement) {
+            heroVideoElement.addEventListener('ended', function() {
+                this.currentTime = 0; // 强制拉回0秒
+                this.play().catch(e => console.log("循环播放被拦截")); // 强制重新播放
+            });
+        }
     </script>
 </body>
 </html>
